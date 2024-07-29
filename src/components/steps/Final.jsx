@@ -6,7 +6,8 @@ export default function Final() {
 
   return (
     <div className='p-4'>
-      <h2 className='text-2xl font-bold'>User Details</h2>
+      <h2 className='text-2xl font-bold'>User Details :</h2>
+      <br></br>
       <p><strong>First Name:</strong> {userData.fname}</p>
       <p><strong>Last Name:</strong> {userData.lname}</p>
       <p><strong>Email:</strong> {userData.email}</p>

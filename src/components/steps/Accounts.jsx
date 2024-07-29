@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+ import React, { useContext, useEffect } from 'react';
 import { StepperContext } from '../contexts/StepperContext';
 import { useForm } from 'react-hook-form';
 
@@ -9,11 +9,17 @@ export default function Accounts() {
   });
 
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
+    // Initialize form fields with context data if available
+    setValue('username', userData.username || '');
+    setValue('password', userData.password || '');
+    setValue('confirmPassword', userData.confirmPassword || '');
+    setValue('email', userData.email || '');
+
+    const subscription = watch((value, { name }) => {
       setUserData({ ...userData, [name]: value[name] });
     });
     return () => subscription.unsubscribe();
-  }, [watch]);
+  }, [setValue, watch, userData, setUserData]);
 
   const onSubmit = (data) => {
     handleNextStep();
@@ -38,7 +44,7 @@ export default function Accounts() {
                 message: 'Username cannot exceed 20 characters',
               },
               pattern: {
-                value: /^[a-zA-Z0-9]+$/,
+                value: /^[a-zA-Z0-9_]+$/,
                 message: 'Username can only contain letters, numbers, and underscores',
               },
             })}
