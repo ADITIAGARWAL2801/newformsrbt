@@ -12,7 +12,13 @@ export default function Details() {
     switch (name) {
       case 'fname':
       case 'lname':
-        error = /^[a-zA-Z\s]*$/.test(value) ? '' : `${name === 'fname' ? 'First' : 'Last'} name should contain only letters`;
+        if (!/^[a-zA-Z\s]*$/.test(value)) {
+          error = `${name === 'fname' ? 'First' : 'Last'} name should contain only letters`;
+        } else if (value.length < 2) {
+          error = `${name === 'fname' ? 'First' : 'Last'} name should be at least 2 characters long`;
+        } else if (value.length > 50) {
+          error = `${name === 'fname' ? 'First' : 'Last'} name should not exceed 50 characters`;
+        }
         break;
       case 'email':
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -67,6 +73,7 @@ export default function Details() {
       handleNextStep();
     }
   };
+
   const states = [
     "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", 
     "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", 
@@ -183,6 +190,7 @@ export default function Details() {
         </div>
         {errors.homeaddress && <p className='text-red-500 text-xs'>{errors.homeaddress}</p>}
       </div>
+      
       <div className='w-full mx-2'>
         <label className='font-bold h-6 mt-3 text-gray-500 text-xs leading-8 uppercase'>State</label>
         <div className='relative'>
@@ -249,7 +257,7 @@ export default function Details() {
             </div>
           )}
         </div>
-        </div>
+      </div>
     </form>
   );
 }

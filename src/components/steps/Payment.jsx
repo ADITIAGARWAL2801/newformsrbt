@@ -2,14 +2,14 @@ import { useContext, useState } from 'react';
 import { StepperContext } from "../contexts/StepperContext";
 
 export default function Payment() {
-  const { userData, setUserData, handleNextStep, setCurrentStep } = useContext(StepperContext);
+  const { userData, setUserData, handleNextStep } = useContext(StepperContext);
   const [errors, setErrors] = useState({});
-  const [showmonths, setShowmonths] = useState(false);
-  const [showyears, setShowyears] = useState(false);
+  const [showMonths, setShowMonths] = useState(false);
+  const [showYears, setShowYears] = useState(false);
 
   const validateField = (name, value) => {
     let error = '';
-    switch(name) {
+    switch (name) {
       case 'cardHolderName':
         const nameRegex = /^[A-Za-z\s]+$/;
         error = !value ? 'Name is required' : !nameRegex.test(value) ? 'Invalid name' : '';
@@ -21,6 +21,12 @@ export default function Payment() {
       case 'cardnumber':
         const cardnumberRegex = /^[1-9][0-9]{15}$/;
         error = !value ? 'Card number is required' : !cardnumberRegex.test(value) ? 'Invalid card number' : '';
+        break;
+      case 'month':
+        error = !value ? 'Expiry month is required' : '';
+        break;
+      case 'year':
+        error = !value ? 'Expiry year is required' : '';
         break;
       default:
         break;
@@ -37,7 +43,7 @@ export default function Payment() {
   const handleSubmit = (event) => {
     event.preventDefault();
     let formIsValid = true;
-    const fieldsToValidate = ['cardnumber', 'cvv', 'cardHolderName'];
+    const fieldsToValidate = ['cardnumber', 'cvv', 'cardHolderName', 'month', 'year'];
     const newErrors = {};
 
     fieldsToValidate.forEach(field => {
@@ -53,7 +59,7 @@ export default function Payment() {
     setErrors(newErrors);
 
     if (formIsValid) {
-      handleNextStep(); // Call handleNextStep from context
+      handleNextStep();
     }
   };
 
@@ -119,7 +125,7 @@ export default function Payment() {
             <div className='relative'>
               <div
                 className='bg-white my-2 p-1 flex border border-gray-200 rounded cursor-pointer'
-                onClick={() => setShowmonths(!showmonths)}
+                onClick={() => setShowMonths(!showMonths)}
               >
                 <input
                   readOnly
@@ -128,7 +134,7 @@ export default function Payment() {
                   className='p-1 px-2 appearance-none outline-none w-full text-gray-800'
                 />
               </div>
-              {showmonths && (
+              {showMonths && (
                 <div className='absolute z-10 mt-2 bg-white border border-gray-200 rounded w-full'>
                   {months.map(month => (
                     <div
@@ -136,7 +142,8 @@ export default function Payment() {
                       className='p-2 hover:bg-gray-100 cursor-pointer'
                       onClick={() => {
                         setUserData({ ...userData, month });
-                        setShowmonths(false);
+                        setShowMonths(false);
+                        validateField('month', month);
                       }}
                     >
                       {month}
@@ -145,6 +152,7 @@ export default function Payment() {
                 </div>
               )}
             </div>
+            {errors.month && <p className='text-red-500 text-xs'>{errors.month}</p>}
           </div>
 
           <div className='w-full mx-2'>
@@ -152,16 +160,16 @@ export default function Payment() {
             <div className='relative'>
               <div
                 className='bg-white my-2 p-1 flex border border-gray-200 rounded cursor-pointer'
-                onClick={() => setShowyears(!showyears)}
+                onClick={() => setShowYears(!showYears)}
               >
                 <input
                   readOnly
                   value={userData['year'] || 'Select Expiry Year'}
-                  name='month'
+                  name='year'
                   className='p-1 px-2 appearance-none outline-none w-full text-gray-800'
                 />
               </div>
-              {showyears && (
+              {showYears && (
                 <div className='absolute z-10 mt-2 bg-white border border-gray-200 rounded w-full'>
                   {years.map(year => (
                     <div
@@ -169,7 +177,8 @@ export default function Payment() {
                       className='p-2 hover:bg-gray-100 cursor-pointer'
                       onClick={() => {
                         setUserData({ ...userData, year });
-                        setShowyears(false);
+                        setShowYears(false);
+                        validateField('year', year);
                       }}
                     >
                       {year}
@@ -178,6 +187,7 @@ export default function Payment() {
                 </div>
               )}
             </div>
+            {errors.year && <p className='text-red-500 text-xs'>{errors.year}</p>}
           </div>
         </div>
       </div>
